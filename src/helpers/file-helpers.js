@@ -26,15 +26,25 @@ export async function getBlogPostList() {
 }
 
 export async function loadBlogPost(slug) {
-  const rawContent = await readFile(
-    `/content/${slug}.mdx`
-  );
+    let rawContent;
 
-  const { data: frontmatter, content } =
-    matter(rawContent);
+    // Wrapping this operation in a try/catch so that it stops
+    // throwing an error if the file can't be found. Instead,
+    // we'll return `null`, and the caller can figure out how
+    // to handle this situation.
+    try {
+      rawContent = await readFile(
+        `/content/${slug}.mdx`
+      );
+    } catch (err) {
+      return null;
+    }
 
-  return { frontmatter, content };
-}
+    const { data: frontmatter, content } =
+      matter(rawContent);
+
+    return { frontmatter, content };
+  }
 
 function readFile(localPath) {
   return fs.readFile(

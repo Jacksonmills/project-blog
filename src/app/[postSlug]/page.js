@@ -14,7 +14,13 @@ const loadCachedBlogPost = React.cache((postSlug) =>
 );
 
 export async function generateMetadata({ params }) {
-  const { frontmatter } = await loadCachedBlogPost(params.postSlug);
+  const post = await loadCachedBlogPost(params.postSlug);
+
+  if (!post) {
+    return null
+  }
+
+  const { frontmatter } = post;
 
   return {
     title: `${frontmatter.title}`,
